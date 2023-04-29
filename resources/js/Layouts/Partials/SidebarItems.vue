@@ -1,6 +1,6 @@
 <template>
   <div v-for="(item, index) in menuItems" :key="index">
-    <menu-item :svg="item.svg" :name="item.name"></menu-item>
+    <menu-item :svg="item.svg" :type="item.type" :name="item.name"></menu-item>
   </div>
   <div>
     <profile-item></profile-item>
@@ -251,6 +251,7 @@ export default {
             ></line>
           </svg>`,
           name: "Create",
+          type: "button",
         },
       ],
     };

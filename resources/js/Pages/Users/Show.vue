@@ -128,6 +128,12 @@
         v-if="isActive"
         @close-modal="closeModal"
       ></settings-modal>
+
+      <create-post-modal
+        style="width: 100%; height: 100%"
+        v-if="createPostModalOpen"
+        @close-modal="closeCreateModal"
+      ></create-post-modal>
     </div>
   </AuthenticatedLayout>
 </template>
@@ -136,15 +142,28 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link } from "@inertiajs/vue3";
 import SettingsModal from "@/Components/SettingsModal.vue";
+import CreatePostModal from "@/Components/CreatePostModal.vue";
 
 export default {
-  components: { AuthenticatedLayout, Head, Link, SettingsModal },
+  components: {
+    AuthenticatedLayout,
+    Head,
+    Link,
+    SettingsModal,
+    CreatePostModal,
+  },
   props: ["user", "posts", "pageTitle", "postsCount"],
   data() {
     return {
       isActive: false,
+      createModalActive: false,
       data: [],
     };
+  },
+  computed: {
+    createPostModalOpen() {
+      return this.$store.state.createPostModal.createPostModal;
+    },
   },
 
   methods: {
@@ -157,6 +176,10 @@ export default {
     },
 
     toggleData(model) {},
+
+    closeCreateModal() {
+      this.$store.dispatch("createPostModal/closeCreateModalAction");
+    },
   },
 };
 </script>
