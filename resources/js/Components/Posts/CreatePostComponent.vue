@@ -43,10 +43,17 @@
 
 <script>
 export default {
+  emits: ["image-uploaded"],
   props: ["page"],
   data() {
     return {
       fileLimit: 1,
+      urlsFromUpload: [],
+      objectsFromUpload: [],
+
+      errors: {
+        limitError: false,
+      },
     };
   },
 
@@ -65,8 +72,10 @@ export default {
           break;
         }
         const file = files[i];
-        this.fileUploads.push(file);
-        this.uploadedFiles.push(URL.createObjectURL(file));
+        this.objectsFromUpload.push(file);
+        this.urlsFromUpload.push(URL.createObjectURL(file));
+
+        this.$emit("image-uploaded", file);
       }
 
       this.serverUpdate();

@@ -58,7 +58,10 @@
           <ul class="my-4 space-y-3">
             <li>
               <form @submit.prevent="onSubmit">
-                <create-post-component :page="page"></create-post-component>
+                <create-post-component
+                  @image-uploaded="saveImageData"
+                  :page="page"
+                ></create-post-component>
               </form>
             </li>
           </ul>
@@ -96,6 +99,10 @@ export default {
     close() {
       // your code to close the modal
       this.$emit("close-modal");
+    },
+
+    saveImageData(file) {
+      this.$store.dispatch("savePostImageData/savePostImageAction", file);
     },
 
     onSubmit() {
