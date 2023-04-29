@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-center w-full">
+  <div v-if="page === 0" class="flex items-center justify-center w-full">
     <label
       for="dropzone-file"
       class="flex flex-col items-center justify-center w-full h-96 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
@@ -27,8 +27,17 @@
           SVG, PNG, JPG or GIF (MAX. 800x400px)
         </p>
       </div>
-      <input id="dropzone-file" type="file" class="hidden" />
+      <input
+        @input="uploadImage"
+        id="dropzone-file"
+        type="file"
+        class="hidden"
+      />
     </label>
+  </div>
+
+  <div v-if="page === 1" class="flex items-center justify-center w-full">
+    test
   </div>
 </template>
 
@@ -36,7 +45,32 @@
 export default {
   props: ["page"],
   data() {
-    return {};
+    return {
+      fileLimit: 1,
+    };
+  },
+
+  methods: {
+    uploadImage() {
+      let files = event.target.files;
+
+      if (this.uploadedFiles.length >= this.fileLimit) {
+        this.errors.limitError = true;
+        return;
+      }
+
+      for (let i = 0; i < files.length; i++) {
+        if (i == this.fileLimit) {
+          this.errors.limitError = true;
+          break;
+        }
+        const file = files[i];
+        this.fileUploads.push(file);
+        this.uploadedFiles.push(URL.createObjectURL(file));
+      }
+
+      this.serverUpdate();
+    },
   },
 };
 </script>

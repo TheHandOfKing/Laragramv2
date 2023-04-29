@@ -9,15 +9,28 @@
       <!-- Modal content -->
       <div class="relative bg-white rounded-lg shadow">
         <div class="flex justify-between px-6 py-4 border-b rounded-t">
-          <h3 class="text-base font-semibold text-gray-900 lg:text-xl">
+          <h3
+            v-if="page == 0"
+            class="text-base font-semibold text-gray-900 lg:text-xl"
+          >
             Create New Post
           </h3>
-          <button
-            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center"
-            @click="page = 1"
-          >
-            Next
-          </button>
+          <div class="buttons">
+            <button
+              v-if="page > 0"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center"
+              @click="page -= 1"
+            >
+              Back
+            </button>
+            <button
+              v-if="tempImage"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center"
+              @click="page += 1"
+            >
+              Next
+            </button>
+          </div>
           <button
             @click="close"
             type="button"
@@ -62,6 +75,7 @@ export default {
   components: { CreatePostComponent },
   data() {
     return {
+      tempImage: "",
       page: 0,
       imageForm: this.$inertia.form({
         _method: "PUT",
