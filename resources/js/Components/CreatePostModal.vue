@@ -58,10 +58,7 @@
           <ul class="my-4 space-y-3">
             <li>
               <form @submit.prevent="onSubmit">
-                <create-post-component
-                  @image-uploaded="saveImageData"
-                  :page="page"
-                ></create-post-component>
+                <create-post-component :page="page"></create-post-component>
               </form>
             </li>
           </ul>
@@ -76,9 +73,13 @@ import CreatePostComponent from "./Posts/CreatePostComponent.vue";
 
 export default {
   components: { CreatePostComponent },
+  computed: {
+    tempImage() {
+      return this.$store.getters["savePostImageData/getPostImageUrl"];
+    },
+  },
   data() {
     return {
-      tempImage: "",
       page: 0,
       imageForm: this.$inertia.form({
         _method: "PUT",
@@ -99,10 +100,6 @@ export default {
     close() {
       // your code to close the modal
       this.$emit("close-modal");
-    },
-
-    saveImageData(file) {
-      this.$store.dispatch("savePostImageData/savePostImageAction", file);
     },
 
     onSubmit() {

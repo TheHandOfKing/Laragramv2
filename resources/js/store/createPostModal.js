@@ -1,7 +1,7 @@
 const createPostModal = {
   namespaced: true,
   state: {
-    createPostModal: true,
+    createPostModal: false,
   },
   mutations: {
     CLOSE_CREATE_MODAL(state) {
