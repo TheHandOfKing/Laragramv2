@@ -24,41 +24,53 @@
               Back
             </button>
             <button
-              v-if="tempImage"
+              v-if="tempImage.length > 0"
               class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center"
-              @click="page += 1"
+              @click="setPage"
             >
               Next
             </button>
           </div>
-          <button
-            @click="close"
-            type="button"
-            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center"
-            data-modal-hide="crypto-modal"
-          >
-            <svg
-              aria-hidden="true"
-              class="w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
+
+          <div class="close items-center flex">
+            <input
+              @click="onSubmit"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-2 text-center"
+              type="submit"
+              value="Share"
+            />
+            <button
+              @click="close"
+              type="button"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center"
+              data-modal-hide="crypto-modal"
             >
-              <path
-                fill-rule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              ></path>
-            </svg>
-            <span class="sr-only">Close modal</span>
-          </button>
+              <svg
+                aria-hidden="true"
+                class="w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
         </div>
         <!-- Modal body -->
         <div class="p-6">
           <ul class="my-4 space-y-3">
             <li>
-              <form @submit.prevent="onSubmit">
-                <create-post-component :page="page"></create-post-component>
+              <form>
+                <create-post-component
+                  :post="postForm"
+                  :page="page"
+                ></create-post-component>
               </form>
             </li>
           </ul>
@@ -77,6 +89,10 @@ export default {
     tempImage() {
       return this.$store.getters["savePostImageData/getPostImageUrl"];
     },
+
+    imageFile() {
+      return this.$store.getters["savePostImageData/getPostImage"];
+    },
   },
   data() {
     return {
@@ -84,15 +100,16 @@ export default {
       imageForm: this.$inertia.form({
         _method: "PUT",
         id: "",
-        files: "",
+        files: this.imageFile,
       }),
 
       postForm: this.$inertia.form({
-        _method: "PUT",
         id: "",
         description: "",
         location: "",
-        user_id: "",
+        user_id: this.$page.props.auth.user.id,
+        likes_view: false,
+        no_comments: false,
       }),
     };
   },
@@ -103,7 +120,18 @@ export default {
     },
 
     onSubmit() {
-      console.log("submitted");
+      this.$inertia
+        .post(route("posts.store"), this.postForm)
+        .then(() => {
+          this.$inertia.post();
+        })
+        .catch((error) => {
+          // Handle error, like showing an error message
+        });
+    },
+    setPage() {
+      if (this.page >= 1) return;
+      this.page += 1;
     },
   },
 };

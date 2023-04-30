@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Foundation\Application;
@@ -30,6 +31,7 @@ Route::get('/', function () {
 Route::get('/dashboard', [UserProfileController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/profiles/{user:slug}', [UserProfileController::class, 'show'])->middleware(['auth', 'verified'])->name('profile');
+Route::resource('posts', PostController::class)->except('show', 'create');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

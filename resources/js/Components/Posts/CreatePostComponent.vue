@@ -49,7 +49,9 @@
       class="w-1/3 flex h-full items-start p-4 pt-0 flex-col"
       style="min-height: 298px"
     >
+      {{ post }}
       <input
+        v-model="post.description"
         type="text"
         name=""
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-6"
@@ -58,6 +60,7 @@
       />
 
       <input
+        v-model="post.location"
         type="text"
         name=""
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-6"
@@ -95,6 +98,7 @@
             <span class="p-4">Hide like and view counts on this post</span>
             <div class="flex items-center">
               <input
+                v-model="post.likes_view"
                 id="checked-checkbox"
                 type="checkbox"
                 value=""
@@ -107,6 +111,7 @@
             <span class="p-4">Turn off commenting</span>
             <div class="flex items-center">
               <input
+                v-model="post.no_comments"
                 id="checked-checkbox"
                 type="checkbox"
                 value=""
@@ -122,7 +127,7 @@
 
 <script>
 export default {
-  props: ["page"],
+  props: ["page", "post"],
   computed: {
     urlsFromUpload() {
       return this.$store.getters["savePostImageData/getPostImageUrl"];

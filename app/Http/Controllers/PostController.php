@@ -29,7 +29,7 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        dd($request);
     }
 
     /**
