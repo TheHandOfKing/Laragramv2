@@ -267,6 +267,8 @@ export default {
 
       img {
         border-radius: 50%;
+        height: 100%;
+        object-fit: cover;
       }
     }
   }

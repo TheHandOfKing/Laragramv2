@@ -17,7 +17,7 @@ class MediaController extends Controller
 
         $media = $model->setImages($collection);
 
-        $images = $model->getMedia();
+        $images = $model->getMedia($collection);
 
         $media = array();
 

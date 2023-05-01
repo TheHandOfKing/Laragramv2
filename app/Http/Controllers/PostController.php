@@ -29,7 +29,21 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        dd($request);
+        if ($request->validated()) {
+            $post = new Post();
+            $post->setValues();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Post created successfily',
+                'post' => $post
+            ]);
+        }
+
+        return response()->json([
+            'status' => 500,
+            'message' => 'Post not created, something went wrong',
+        ]);
     }
 
     /**

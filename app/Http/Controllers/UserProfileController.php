@@ -37,9 +37,7 @@ class UserProfileController extends Controller
      */
     public function show(Request $request, $slug)
     {
-        $user = User::select('name', 'username', 'description')
-            ->where('slug', $slug)
-            ->first();
+        $user = User::where('slug', $slug)->first()->append('profilePicture');
 
         $posts = $user->posts()->paginate(5);
 

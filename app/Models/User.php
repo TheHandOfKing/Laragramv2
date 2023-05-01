@@ -57,7 +57,7 @@ class User extends Authenticatable implements HasMedia
     public function getProfilePictureAttribute()
     {
         if ($this->hasMedia('profile-picture')) {
-            return $this->getFirstMedia('profile-picture')->getUrl();
+            return $this->getFirstMedia('profile-picture')->getUrl('profile-picture');
         }
 
         return env('APP_URL') . '/laravel-projects/laragramv2/storage/app/public/notset.png';

@@ -97,11 +97,6 @@ export default {
   data() {
     return {
       page: 0,
-      imageForm: this.$inertia.form({
-        _method: "PUT",
-        id: "",
-        files: this.imageFile,
-      }),
 
       postForm: this.$inertia.form({
         id: "",
@@ -120,14 +115,20 @@ export default {
     },
 
     onSubmit() {
-      this.$inertia
-        .post(route("posts.store"), this.postForm)
-        .then(() => {
-          this.$inertia.post();
-        })
-        .catch((error) => {
-          // Handle error, like showing an error message
+      axios.post(route("posts.store"), this.postForm).then((res) => {
+        let id = res.data.post.id;
+        const imageFormData = new FormData();
+
+        this.imageFile.forEach((file) => {
+          imageFormData.append("files[]", file);
         });
+
+        axios.post(`/media/update-media/post/${id}/post-image`, imageFormData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      });
     },
     setPage() {
       if (this.page >= 1) return;

@@ -163,7 +163,7 @@ export default {
           break;
         }
         const file = files[i];
-
+        console.log(file);
         this.$store.dispatch("savePostImageData/savePostImageAction", file);
         this.$store.dispatch(
           "savePostImageData/savePostImageUrlAction",

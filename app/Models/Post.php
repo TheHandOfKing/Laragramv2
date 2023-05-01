@@ -18,36 +18,30 @@ class Post extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
-    public function setNameAttribute($value)
+    public function setValues(): void
     {
-        $this->attributes['name'] = $value;
-        $this->attributes['slug'] = $this->str_slug($value);
+        $request = request();
+
+        $this->description = $request->input('description', '') ?? '';
+        $this->location = $request->input('location', '-1') ?? '-1';
+        $this->user_id = $request->input('user_id', '-1') ?? '-1';
+        $this->no_comments = $request->input('no_comments', '') ?? '';
+        $this->likes_view = $request->input('likes_view', '') ?? '';
+        $this->slug = $this->generateRandomString();
+
+        $this->save();
     }
 
-    private function str_slug($text)
+    function generateRandomString(int $length = 10): string
     {
-        // replace non letter or digits by -
-        $text = preg_replace('~[^\pL\d]+~u', '-', $text);
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
 
-        // transliterate
-        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-
-        // remove unwanted characters
-        $text = preg_replace('~[^-\w]+~', '', $text);
-
-        // trim
-        $text = trim($text, '-');
-
-        // remove duplicate -
-        $text = preg_replace('~-+~', '-', $text);
-
-        // lowercase
-        $text = strtolower($text);
-
-        if (empty($text)) {
-            return 'n-a';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
         }
 
-        return $text;
+        return $randomString;
     }
 }
