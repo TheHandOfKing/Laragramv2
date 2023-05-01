@@ -9,7 +9,7 @@ Brief project description goes here.
 For Windows (using XAMPP):
 
 1. Open your php.ini file, usually located in the xampp\php\ folder.
-2. Find the line ;extension=gd or ;extension=gd2 and remove the semicolon ; at the beginning of the line.
+2. Find the line **;extension=gd or ;extension=gd2** and remove the semicolon ; at the beginning of the line.
 3. Save the file and restart your Apache server using the XAMPP control panel.
 4. After installing and enabling the GD extension, the image conversions should work as expected.
 
