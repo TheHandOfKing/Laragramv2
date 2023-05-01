@@ -31,7 +31,8 @@ Route::get('/', function () {
 Route::get('/dashboard', [UserProfileController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/profiles/{user:slug}', [UserProfileController::class, 'show'])->middleware(['auth', 'verified'])->name('profile');
-Route::resource('posts', PostController::class)->except('show', 'create');
+Route::resource('posts', PostController::class)->except('index', 'create', 'show');
+Route::get('/p/{post:slug}', [PostController::class, 'show'])->name('posts.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

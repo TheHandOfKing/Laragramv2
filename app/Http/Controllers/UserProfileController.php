@@ -39,7 +39,7 @@ class UserProfileController extends Controller
     {
         $user = User::where('slug', $slug)->first()->append('profilePicture');
 
-        $posts = $user->posts()->paginate(5);
+        $posts = $user->posts()->with('media')->paginate(5);
 
         if (!$user) {
             return abort(404, 'User not found');

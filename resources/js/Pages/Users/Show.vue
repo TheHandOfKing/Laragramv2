@@ -117,7 +117,22 @@
           </div>
         </div>
       </div>
-      <div v-if="data.length > 0" class="data-block flex justify-center"></div>
+      <div
+        v-if="posts.data.length > 0"
+        class="mt-6 data-block flex flex-wrap justify-start"
+      >
+        <div
+          v-for="(row, rowIndex) in postRows"
+          :key="rowIndex"
+          class="flex justify-start"
+        >
+          <div v-for="post in row" :key="post.id" class="post mr-6 mt-6">
+            <Link :href="route('posts.show', post.slug)">
+              <img :src="post.media[0].original_url" alt="" />
+            </Link>
+          </div>
+        </div>
+      </div>
       <div class="data-block flex justify-center" v-else>
         <span>You have not created any posts yet.</span>
       </div>
@@ -157,12 +172,21 @@ export default {
     return {
       isActive: false,
       createModalActive: false,
-      data: [],
     };
   },
   computed: {
     createPostModalOpen() {
       return this.$store.state.createPostModal.createPostModal;
+    },
+    postRows() {
+      const posts = this.posts.data;
+      const chunked = [];
+
+      for (let i = 0; i < posts.length; i += 3) {
+        chunked.push(posts.slice(i, i + 3));
+      }
+
+      return chunked;
     },
   },
 
@@ -270,6 +294,17 @@ export default {
         height: 100%;
         object-fit: cover;
       }
+    }
+  }
+
+  .post {
+    height: 293px;
+    width: 293px;
+    cursor: pointer;
+
+    img {
+      object-fit: cover;
+      height: 100%;
     }
   }
 }

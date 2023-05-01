@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use Inertia\Inertia;
 
 class PostController extends Controller
 {
@@ -51,7 +52,11 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        $user = $post->user;
+        $pageTitle = "Post from @" . $user->username;
+        $media = $post->getMedia('post-image');
+
+        return Inertia::render('Posts/Show', ['user' => $user, 'post' => $post, 'pageTitle' => $pageTitle, 'media' => $media]);
     }
 
     /**

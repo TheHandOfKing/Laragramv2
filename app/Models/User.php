@@ -54,6 +54,21 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at' => 'datetime',
     ];
 
+    public function metadata()
+    {
+        return $this->hasMany(UserMetadata::class);
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function getProfilePictureAttribute()
     {
         if ($this->hasMedia('profile-picture')) {
@@ -68,26 +83,12 @@ class User extends Authenticatable implements HasMedia
         return false;
     }
 
-    public function metadata()
-    {
-        return $this->hasMany(UserMetadata::class);
-    }
-
-    public function posts(): HasMany
-    {
-        return $this->hasMany(Post::class);
-    }
-
     public function setUsernameAttribute($value)
     {
         $this->attributes['username'] = $value;
         $this->attributes['slug'] = $this->str_slug($value);
     }
 
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
 
     private function str_slug($text)
     {

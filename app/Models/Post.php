@@ -6,8 +6,10 @@ use App\Traits\ImageTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Post extends Model implements HasMedia
 {
@@ -16,6 +18,11 @@ class Post extends Model implements HasMedia
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 
     public function setValues(): void
@@ -43,5 +50,25 @@ class Post extends Model implements HasMedia
         }
 
         return $randomString;
+    }
+
+    // Media
+
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this
+            ->addMediaConversion('post-image')
+            ->fit(Manipulations::FIT_CROP, 293, 293)
+            ->nonQueued();
+
+        $this
+            ->addMediaConversion('post-full-picture')
+            ->fit(Manipulations::FIT_CROP, 800, 800)
+            ->nonQueued();
+
+        $this
+            ->addMediaConversion('feed-picture')
+            ->fit(Manipulations::FIT_CROP, 468, 595)
+            ->nonQueued();
     }
 }
