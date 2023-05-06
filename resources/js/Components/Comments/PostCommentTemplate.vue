@@ -1,5 +1,5 @@
 <template>
-  <div class="single-comment-template p-4 flex w-full">
+  <div class="single-comment-template p-4 flex w-full flex-col">
     <div class="user-detials w-full items-start flex justify-between">
       <div class="wrap flex">
         <span class="image mr-3 mt-3">
@@ -17,12 +17,17 @@
           </div>
           <div class="flex items-center">
             <div class="date text-xs mr-3">47w</div>
-            <div class="reply text-xs cursor-pointer">Reply</div>
+            <div
+              @click="submit(comment.id, user.username, user.id)"
+              class="reply text-xs cursor-pointer"
+            >
+              Reply
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="like flex items-center h-full cursor-pointer">
+      <div class="like flex items-center cursor-pointer" style="height: 44px">
         <span class=""
           ><svg
             aria-label="Unlike"
@@ -41,7 +46,6 @@
         ></span>
       </div>
     </div>
-
     <div class="subcomments">
       <template v-if="comment.children">
         <post-comment-template
@@ -62,6 +66,16 @@ export default {
   components: {
     Link,
     PostCommentTemplate: () => import("./PostCommentTemplate.vue"),
+  },
+
+  methods: {
+    submit(parent, username, user_id) {
+      this.$emit("comment-response", {
+        parent_id: parent,
+        user_id: user_id,
+        username: username,
+      });
+    },
   },
 };
 </script>

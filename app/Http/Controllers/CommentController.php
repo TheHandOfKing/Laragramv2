@@ -46,7 +46,7 @@ class CommentController extends Controller
         }
 
         $comment->save();
-
+        dd($comment);
         return response()->json([
             'status' => 'success',
             'message' => 'Comment added successfully!',

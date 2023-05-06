@@ -31,6 +31,7 @@
                 :key="index"
                 :comment="comment"
                 :user="user"
+                @comment-response="respondToComment"
               ></post-comment-template>
             </div>
 
@@ -210,12 +211,16 @@ export default {
 
   methods: {
     onCommentSubmit() {
-      console.log(this.comment);
       axios.post(this.route("comments.store", this.comment)).then((data) => {
         let comment = data.data.comment;
 
         this.commentsData.push(comment);
       });
+    },
+
+    respondToComment(data) {
+      this.comment.parent_id = data.parent_id;
+      this.comment.body = "@" + data.username;
     },
   },
 };
