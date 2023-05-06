@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->softDeletes();
             $table->string('banned_at')->default(null)->nullable();
             $table->integer('ban_notice')->default(0);
             $table->boolean('active')->default(0);
@@ -20,6 +19,7 @@ return new class extends Migration
             $table->string('geolocation')->default('');
             $table->string('mac_address')->default('');
             $table->timestamp('last_seen_at')->useCurrent();
+            $table->softDeletes();
         });
     }
 
@@ -29,7 +29,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropSoftDeletes();
             $table->dropColumn('banned_at');
             $table->dropColumn('ban_notice');
             $table->dropColumn('slug');
@@ -37,6 +36,7 @@ return new class extends Migration
             $table->dropColumn('geolocation');
             $table->dropColumn('mac_address');
             $table->dropColumn('last_seen_at');
+            $table->dropSoftDeletes();
         });
     }
 };

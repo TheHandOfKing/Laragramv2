@@ -55,8 +55,9 @@ class PostController extends Controller
         $user = $post->user;
         $pageTitle = "Post from @" . $user->username;
         $media = $post->getMedia('post-image');
+        $comments = $post->comments;
 
-        return Inertia::render('Posts/Show', ['user' => $user, 'post' => $post, 'pageTitle' => $pageTitle, 'media' => $media]);
+        return Inertia::render('Posts/Show', ['user' => $user, 'post' => $post, 'pageTitle' => $pageTitle, 'media' => $media, "comments" => $comments]);
     }
 
     /**

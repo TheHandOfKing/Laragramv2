@@ -117,6 +117,50 @@ class User extends Authenticatable implements HasMedia
         return $text;
     }
 
+    // Like Logic
+
+    public function likePosts()
+    {
+        return $this->morphedByMany(Post::class, 'likable');
+    }
+
+    public function likeComments()
+    {
+        return $this->morphedByMany(Comment::class, 'likable');
+    }
+
+    public function likePost(Post $post, $like)
+    {
+        $likePosts = $this->likePosts();
+
+        return $this->_like($likePosts, $post, $like);
+    }
+
+    public function likeComment(Comment $comment, $like)
+    {
+        $likeComments = $this->likeComments();
+
+        return $this->_like($likeComments, $comment, $like);
+    }
+
+    private function _like($relationship, $model, $like)
+    {
+        if ($relationship->where('likable_id', $model->id)->exists()) {
+            $relationship->updateExistingPivot($model, ['like' => $like]);
+        } else {
+            $relationship->attach($model, ['like' => $like]);
+        }
+
+        $model->load('likes');
+        $unlike = (int) $model->unlike()->sum('like');
+        $addLike = (int) $model->addLike()->sum('like');
+
+        $model->likes_count = $addLike + $unlike;
+        $model->save();
+
+        return $model->likes_count;
+    }
+
     // Media
 
     public function registerMediaConversions(Media $media = null): void

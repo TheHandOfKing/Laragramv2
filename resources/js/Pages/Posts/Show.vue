@@ -25,15 +25,15 @@
               </div>
             </div>
 
-            <div class="comment-section flex flex-col">
-              <post-comment-template :user="user"></post-comment-template>
-              <post-comment-template :user="user"></post-comment-template>
-              <post-comment-template :user="user"></post-comment-template>
-              <post-comment-template :user="user"></post-comment-template>
-              <post-comment-template :user="user"></post-comment-template>
-              <post-comment-template :user="user"></post-comment-template>
-
-              <post-comment-template :user="user"></post-comment-template>
+            <div
+              v-for="(comment, index) in comments"
+              :key="index"
+              class="comment-section flex flex-col"
+            >
+              <post-comment-template
+                :comment="comment"
+                :user="user"
+              ></post-comment-template>
             </div>
 
             <div class="post-comment p-4">
@@ -71,8 +71,22 @@
                 <small>{{ post.created_at }}</small>
               </div>
 
-              <div class="post-a-comment">
-                <input type="text" name="" id="" placeholder="Add a comment" />
+              <div class="post-a-comment flex">
+                <input
+                  v-model="comment"
+                  type="text"
+                  name=""
+                  id=""
+                  class="block text-sm w-full font-medium text-gray-900 border-none outline-none"
+                  style="height: 22px"
+                  placeholder="Add a comment"
+                />
+                <input
+                  @submit.prevent="onCommentSubmit"
+                  type="submit"
+                  class="cursor-pointer"
+                  value="Post"
+                />
               </div>
             </div>
           </div>
@@ -98,7 +112,7 @@ export default {
     PostCommentTemplate,
     SettingsModal,
   },
-  props: ["post", "user", "pageTitle", "media"],
+  props: ["post", "user", "pageTitle", "media", "comments"],
   data() {
     return {
       icons: {
@@ -186,11 +200,17 @@ export default {
           ></polygon>
         </svg>`,
       },
+
+      comment: "",
     };
   },
   computed: {},
 
-  methods: {},
+  methods: {
+    onCommentSubmit() {
+      axios.post();
+    },
+  },
 };
 </script>
 
@@ -241,7 +261,7 @@ small {
 
         .comment-section {
           overflow-y: scroll;
-          height: calc(100% - 175px);
+          height: calc(100% - 195px);
         }
 
         .comment-section::-webkit-scrollbar {

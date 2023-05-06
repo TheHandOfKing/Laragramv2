@@ -6,6 +6,8 @@ use App\Traits\ImageTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -18,6 +20,40 @@ class Post extends Model implements HasMedia
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->orderBy('likes_count', 'DESC');
+    }
+
+    public function pinComment(Comment $comment)
+    {
+        $this->pinned_comment_id = $comment->id;
+
+        $this->save();
+    }
+
+    public function saved_posts()
+    {
+        return $this->belongsToMany(User::class, 'saved_posts')->withTimestamps();
+    }
+
+    public function isSaved()
+    {
+        return $this->saved_posts()->where('user_id', Auth::id())->count() > 0;
+    }
+
+    // Getters 
+
+    public function getIsSavedAttribute()
+    {
+        return $this->isSaved();
+    }
+
+    public function getFavoritesCountAttribute()
+    {
+        return $this->favorites->count();
     }
 
     public function getRouteKeyName()
