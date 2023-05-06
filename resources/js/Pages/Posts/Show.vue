@@ -250,6 +250,7 @@ small {
       border-top-right-radius: 3px;
       width: 100%;
       display: flex;
+      min-height: 800px;
       max-height: 800px;
 
       .post-image {

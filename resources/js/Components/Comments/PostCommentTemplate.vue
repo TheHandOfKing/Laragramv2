@@ -46,7 +46,14 @@
         ></span>
       </div>
     </div>
-    <div class="subcomments">
+    <div
+      @click="showComments = true"
+      v-if="!showComments && hasChildren"
+      class="show-comments text-xs cursor-pointer text-center"
+    >
+      View ({{ comment.children.length }})
+    </div>
+    <div v-if="showComments" class="subcomments">
       <template v-if="comment.children">
         <post-comment-template
           v-for="(child, index) in comment.children"
@@ -68,6 +75,17 @@ export default {
     PostCommentTemplate: () => import("./PostCommentTemplate.vue"),
   },
 
+  computed: {
+    hasChildren() {
+      return this.comment.children && this.comment.children.length;
+    },
+  },
+
+  data() {
+    return {
+      showComments: false,
+    };
+  },
   methods: {
     submit(parent, username, user_id) {
       this.$emit("comment-response", {
