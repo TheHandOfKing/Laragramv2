@@ -128,7 +128,11 @@
         >
           <div v-for="post in row" :key="post.id" class="post mr-6 mt-6">
             <Link :href="route('posts.show', post.slug)">
-              <img :src="post.media[0].original_url" alt="" />
+              <img
+                v-if="post.media && post.media[0]"
+                :src="post.media[0].original_url"
+                alt=""
+              />
             </Link>
           </div>
         </div>

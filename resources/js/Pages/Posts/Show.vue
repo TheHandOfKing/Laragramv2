@@ -25,12 +25,10 @@
               </div>
             </div>
 
-            <div
-              v-for="(comment, index) in comments"
-              :key="index"
-              class="comment-section flex flex-col"
-            >
+            <div class="comment-section flex flex-col">
               <post-comment-template
+                v-for="(comment, index) in commentsData"
+                :key="index"
                 :comment="comment"
                 :user="user"
               ></post-comment-template>
@@ -73,7 +71,7 @@
 
               <div class="post-a-comment flex">
                 <input
-                  v-model="comment"
+                  v-model="comment.body"
                   type="text"
                   name=""
                   id=""
@@ -82,7 +80,7 @@
                   placeholder="Add a comment"
                 />
                 <input
-                  @submit.prevent="onCommentSubmit"
+                  @click="onCommentSubmit"
                   type="submit"
                   class="cursor-pointer"
                   value="Post"
@@ -201,14 +199,23 @@ export default {
         </svg>`,
       },
 
-      comment: "",
+      commentsData: this.comments,
+      comment: {
+        body: "",
+        post_id: this.post.id,
+      },
     };
   },
   computed: {},
 
   methods: {
     onCommentSubmit() {
-      axios.post();
+      console.log(this.comment);
+      axios.post(this.route("comments.store", this.comment)).then((data) => {
+        let comment = data.data.comment;
+
+        this.commentsData.push(comment);
+      });
     },
   },
 };

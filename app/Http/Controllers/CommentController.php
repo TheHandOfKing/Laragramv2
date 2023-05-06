@@ -30,12 +30,9 @@ class CommentController extends Controller
      * Store a newly created resource in storage.
      */
 
-    public function store(StoreCommentRequest $request, Post $post)
+    public function store(StoreCommentRequest $request)
     {
-        $request->validate([
-            'body' => 'required|string|max:255',
-        ]);
-
+        $post = Post::find($request->post_id);
         $comment = new Comment([
             'body' => $request->input('body'),
             'user_id' => Auth::id(),
@@ -50,7 +47,11 @@ class CommentController extends Controller
 
         $comment->save();
 
-        return redirect()->back()->with('status', 'Comment added successfully!');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Comment added successfully!',
+            'comment' => $comment,
+        ]);
     }
 
     /**

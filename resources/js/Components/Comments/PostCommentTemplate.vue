@@ -1,26 +1,24 @@
 <template>
   <div class="single-comment-template p-4 flex w-full">
-    <div class="user-detials w-full items-start flex">
-      <span class="image mr-3 mt-3">
-        <img :src="user.profilePicture" alt="" />
-      </span>
+    <div class="user-detials w-full items-start flex justify-between">
+      <div class="wrap flex">
+        <span class="image mr-3 mt-3">
+          <img :src="user.profilePicture" alt="" />
+        </span>
+        <div class="comment-content">
+          <Link class="text-sm link" :href="route('profile', user.slug)">{{
+            user.username
+          }}</Link>
 
-      <div class="comment-content">
-        <Link class="text-sm link" :href="route('profile', user.slug)">{{
-          user.username
-        }}</Link>
-
-        <div style="display: inline; word-wrap: break-word">
-          <span
-            style="display: inline !important; margin: 0 !important"
-            class="text-sm"
-          >
-            asdasdasdadakjdasasdasdasdasdasdadasd</span
-          >
-        </div>
-        <div class="flex items-center">
-          <div class="date text-xs mr-3">47w</div>
-          <div class="reply text-xs cursor-pointer">Reply</div>
+          <div style="display: inline; word-wrap: break-word">
+            <span style="display: inline !important" class="text-sm ml-3">
+              {{ comment.body }}</span
+            >
+          </div>
+          <div class="flex items-center">
+            <div class="date text-xs mr-3">47w</div>
+            <div class="reply text-xs cursor-pointer">Reply</div>
+          </div>
         </div>
       </div>
 
