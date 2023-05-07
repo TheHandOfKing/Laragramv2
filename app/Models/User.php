@@ -54,6 +54,16 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at' => 'datetime',
     ];
 
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id')->withTimestamps();
+    }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id')->withTimestamps();
+    }
+
     public function metadata()
     {
         return $this->hasMany(UserMetadata::class);
@@ -87,6 +97,11 @@ class User extends Authenticatable implements HasMedia
     {
         $this->attributes['username'] = $value;
         $this->attributes['slug'] = $this->str_slug($value);
+    }
+
+    public function canViewProfile(User $user)
+    {
+        return !$this->private || $user->is($this) || $user->following->contains($this);
     }
 
 
