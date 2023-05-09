@@ -2,6 +2,11 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head } from "@inertiajs/vue3";
 import { defineProps } from "vue";
+import Posts from "./Posts/Index.vue";
+
+const props = defineProps({
+  posts: Array,
+});
 </script>
 
 <template>
@@ -16,7 +21,7 @@ import { defineProps } from "vue";
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-          <div class="p-6 text-gray-900">You're logged in!</div>
+          <posts :posts="posts"></posts>
         </div>
       </div>
     </div>

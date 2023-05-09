@@ -17,6 +17,8 @@ class Post extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, ImageTrait;
 
+    protected $appends = ['mainImage'];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -89,6 +91,12 @@ class Post extends Model implements HasMedia
     }
 
     // Media
+
+    public function getMainImageAttribute()
+    {
+        if ($this->hasMedia('post-image'))
+            return $this->getFirstMedia('post-image')->getUrl();
+    }
 
     public function registerMediaConversions(Media $media = null): void
     {

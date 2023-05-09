@@ -79,15 +79,6 @@ class User extends Authenticatable implements HasMedia
         return 'slug';
     }
 
-    public function getProfilePictureAttribute()
-    {
-        if ($this->hasMedia('profile-picture')) {
-            return $this->getFirstMedia('profile-picture')->getUrl('profile-picture');
-        }
-
-        return env('APP_URL') . '/laravel-projects/laragramv2/storage/app/public/notset.png';
-    }
-
     public function isBanned()
     {
         return false;
@@ -177,6 +168,21 @@ class User extends Authenticatable implements HasMedia
     }
 
     // Media
+
+    public function withoutMedia()
+    {
+        return $this->makeHidden(['media']);
+    }
+
+    public function getProfilePictureAttribute()
+    {
+        if ($this->hasMedia('profile-picture')) {
+            return $this->getFirstMedia('profile-picture')->getUrl('profile-picture');
+        }
+
+        return env('APP_URL') . '/laravel-projects/laragramv2/storage/app/public/notset.png';
+    }
+
 
     public function registerMediaConversions(Media $media = null): void
     {

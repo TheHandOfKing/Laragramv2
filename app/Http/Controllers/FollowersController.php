@@ -18,13 +18,11 @@ class FollowersController extends Controller
 
     public function followers(User $user)
     {
-        $followers = $user->followers;
-        return view('users.followers', compact('followers'));
+        return $user->followers;
     }
 
     public function following(User $user)
     {
-        $following = $user->following;
-        return view('users.following', compact('following'));
+        return $user->following;
     }
 }

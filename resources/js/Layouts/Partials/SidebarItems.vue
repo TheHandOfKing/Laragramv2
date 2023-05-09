@@ -1,6 +1,11 @@
 <template>
   <div v-for="(item, index) in menuItems" :key="index">
-    <menu-item :svg="item.svg" :type="item.type" :name="item.name"></menu-item>
+    <menu-item
+      :svg="item.svg"
+      :url="item.url"
+      :type="item.type"
+      :name="item.name"
+    ></menu-item>
   </div>
   <div>
     <profile-item></profile-item>
@@ -35,6 +40,8 @@ export default {
             ></path>
           </svg>`,
           name: "Home",
+          type: "url",
+          url: this.route("dashboard"),
         },
         {
           svg: `<svg
@@ -71,6 +78,8 @@ export default {
             ></circle>
           </svg>`,
           name: "Explore",
+          type: "url",
+          url: this.route("dashboard"),
         },
         {
           svg: `<svg
@@ -104,6 +113,8 @@ export default {
             ></line>
           </svg>`,
           name: "Search",
+          type: "url",
+          url: this.route("dashboard"),
         },
         {
           svg: `<svg
@@ -162,6 +173,8 @@ export default {
             ></path>
           </svg>`,
           name: "Reels",
+          type: "url",
+          url: this.route("dashboard"),
         },
         {
           svg: `<svg
@@ -188,6 +201,8 @@ export default {
             ></path>
           </svg>`,
           name: "Messages",
+          type: "url",
+          url: this.route("dashboard"),
         },
 
         {
@@ -206,6 +221,8 @@ export default {
             ></path>
           </svg>`,
           name: "Notifications",
+          type: "url",
+          url: this.route("dashboard"),
         },
 
         {

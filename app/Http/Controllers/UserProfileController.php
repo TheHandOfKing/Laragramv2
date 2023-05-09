@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,7 +14,15 @@ class UserProfileController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Dashboard');
+        $posts = Post::with(['user' => function ($query) {
+            $query->select(['id', 'name', 'email', 'slug', 'username']); // Add any other relevant fields
+        }])->get();
+
+        $posts->each(function ($post) {
+            $post->user->withoutMedia();
+        });
+
+        return Inertia::render('Dashboard', ['posts' => $posts]);
     }
 
     /**
@@ -35,11 +44,9 @@ class UserProfileController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, $slug)
+    public function show(User $user)
     {
-        $user = User::where('slug', $slug)->first()->append('profilePicture');
-
-        $posts = $user->posts()->with('media')->paginate(5);
+        $posts = $user->append('profilePicture')->posts()->with('media')->paginate(5);
 
         if (!$user) {
             return abort(404, 'User not found');
