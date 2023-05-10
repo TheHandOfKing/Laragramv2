@@ -126,11 +126,6 @@ class User extends Authenticatable implements HasMedia
     }
 
     // Like Logic
-    public function likes()
-    {
-        return $this->belongsToMany(Like::class, 'likables', 'user_id', 'likable_id')->withPivot('like');
-    }
-
     public function likePosts()
     {
         return $this->morphedByMany(Post::class, 'likables');

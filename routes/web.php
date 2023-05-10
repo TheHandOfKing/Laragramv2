@@ -42,6 +42,8 @@ Route::resource('comments', CommentController::class, ['except' => ['create, sho
 
 //Like
 Route::post('/{model}/{id}/like', [LikesController::class, 'like'])->name('like');
+Route::get('/{model}/{id}/like', [LikesController::class, 'getLike'])->name('like.get');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

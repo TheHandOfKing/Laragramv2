@@ -13,7 +13,7 @@
           <span class="mr-3"
             ><button @click="like('post', post.id)" class="_abl-" type="button">
               <div class="_abm0 _abl_">
-                <span v-html="icons.like" class=""></span>
+                <span :class="liked" v-html="icons.like" class=""></span>
               </div></button></span
           ><span class="mr-3"
             ><button class="_abl-" type="button">
@@ -64,14 +64,22 @@
 export default {
   props: ["post"],
 
+  created() {
+    this.checkIsLiked("post", this.post.id);
+  },
+
+  computed: {
+    liked() {
+      return this.isLiked ? "liked" : "default";
+    },
+  },
+
   data() {
     return {
       icons: {
         like: `<svg
             aria-label="Like"
             class="x1lliihq x1n2onr6"
-            color="#000"
-            fill="#000"
             height="24"
             role="img"
             viewBox="0 0 24 24"
@@ -152,6 +160,8 @@ export default {
         </svg>`,
       },
 
+      isLiked: false,
+
       comment: {
         body: "",
       },
@@ -163,12 +173,24 @@ export default {
       axios
         .post(`/${model}/${id}/like`)
         .then((response) => {
-          // Handle success
+          this.isLiked = true;
           console.log(response.data);
         })
         .catch((error) => {
-          // Handle error
           console.error(error);
+        });
+    },
+
+    checkIsLiked(model, id) {
+      axios
+        .get(`/${model}/${id}/like`)
+        .then((response) => {
+          console.log(response);
+          this.isLiked = response.data.liked;
+          console.log(this.isLiked);
+        })
+        .catch((err) => {
+          console.error(err);
         });
     },
   },
@@ -176,6 +198,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.default {
+  color: black;
+  fill: black;
+}
+
+.liked {
+  color: red;
+  fill: red;
+}
+
 .post-wrap {
   border-radius: 30px;
   border: 1px solid gray;
