@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Interface\Likeable;
 use App\Traits\ImageTrait;
+use App\Traits\LikableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -18,9 +19,9 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements HasMedia, Likeable
+class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions, InteractsWithMedia, ImageTrait, LikableTrait;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions, InteractsWithMedia, ImageTrait;
 
     protected $appends = ['profilePicture'];
 
@@ -140,23 +141,22 @@ class User extends Authenticatable implements HasMedia, Likeable
         return $this->morphedByMany(Comment::class, 'likables');
     }
 
-    public function likePost(Post $post, $like)
+    public function likeInstance(Likeable $instance, $like)
     {
-        $likePosts = $this->likePosts();
+        $relationshipMethod = 'like' . class_basename(get_class($instance)) . 's';
 
-        return $this->_like($likePosts, $post, $like);
-    }
+        if (!method_exists($this, $relationshipMethod)) {
+            throw new \Exception('This user cannot like instances of ' . get_class($instance));
+        }
 
-    public function likeComment(Comment $comment, $like)
-    {
-        $likeComments = $this->likeComments();
+        $relationship = $this->$relationshipMethod();
 
-        return $this->_like($likeComments, $comment, $like);
+        return $this->_like($relationship, $instance, $like);
     }
 
     private function _like($relationship, $model, $like)
     {
-        if ($relationship->where('likable_id', $model->id)->exists()) {
+        if ($relationship->where('likables_id', $model->id)->exists()) {
             $relationship->updateExistingPivot($model, ['like' => $like]);
         } else {
             $relationship->attach($model, ['like' => $like]);

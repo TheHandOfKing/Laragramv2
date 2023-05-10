@@ -4,10 +4,10 @@ namespace App\Models;
 
 use App\Interface\Likeable;
 use App\Traits\ImageTrait;
+use App\Traits\LikableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;

@@ -3,33 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Interface\Likeable;
+use App\Models\Comment;
+use App\Models\Post;
+use Illuminate\Http\Request;
 
 class LikesController extends Controller
 {
-    public function like(Likeable $likeable, $like)
+    public function like(Request $request, $model, $id)
     {
+        $class = match ($model) {
+            'post' => Post::class,
+            'comment' => Comment::class,
+            default => abort(400, 'Invalid model type'),
+        };
+
+        $modelInstance = $class::findOrFail($id);
+
+        $user = auth()->user();
         // Find existing like
-        $existingLike = $likeable->likes()->where('user_id', auth()->user()->id)->first();
-
-        // If the like already exists, update it
-        if ($existingLike) {
-            $existingLike->pivot->like = $like;
-            $existingLike->pivot->save();
+        if ($model == 'post') {
+            $user->likeInstance($modelInstance, 1);
         }
-        // Otherwise, create a new like
-        else {
-            $likeable->likes()->attach(auth()->user()->id, ['like' => $like]);
-        }
-
-        // Refresh likes
-        $likeable->load('likes');
-        $unlike = (int) $likeable->unlike()->count();
-        $addLike = (int) $likeable->addLike()->count();
-
-        // Update likes count
-        $likeable->likes_count = $addLike - $unlike;
-        $likeable->save();
-
-        return $likeable->likes_count;
     }
 }

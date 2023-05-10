@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App\Traits;
+
+use App\Models\User;
 
 trait LikableTrait
 {
   public function likes()
   {
-    return $this->morphToMany(User::class, 'likable');
+    return $this->morphToMany(User::class, 'likables');
   }
 
   public function addLike()

@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('likables', function (Blueprint $table) {
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('likable_id');
-            $table->string('likable_type');
+            $table->unsignedInteger('likables_id');
+            $table->string('likables_type');
             $table->tinyInteger('like')->comment('1: like');
             $table->timestamps();
-            $table->unique(['user_id', 'likable_id', 'likable_type']);
+            $table->unique(['user_id', 'likables_id', 'likables_type']);
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('likeables');
+        Schema::dropIfExists('likables');
     }
 };
