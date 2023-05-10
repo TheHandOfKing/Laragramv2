@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowersController;
+use App\Http\Controllers\LikesController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -38,6 +39,9 @@ Route::resource('posts', PostController::class)->except('index', 'create', 'show
 Route::get('/p/{post:slug}', [PostController::class, 'show'])->name('posts.show')->middleware(['auth', 'verified']);
 // Comments
 Route::resource('comments', CommentController::class, ['except' => ['create, show']]);
+
+//Like
+Route::post('/{model}/{id}/like', [LikesController::class, 'like'])->name('like');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

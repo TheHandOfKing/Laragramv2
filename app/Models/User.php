@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Interface\Likeable;
 use App\Traits\ImageTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,9 +18,9 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable implements HasMedia, Likeable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions, InteractsWithMedia, ImageTrait;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions, InteractsWithMedia, ImageTrait, LikableTrait;
 
     protected $appends = ['profilePicture'];
 
@@ -124,15 +125,19 @@ class User extends Authenticatable implements HasMedia
     }
 
     // Like Logic
+    public function likes()
+    {
+        return $this->belongsToMany(Like::class, 'likables', 'user_id', 'likable_id')->withPivot('like');
+    }
 
     public function likePosts()
     {
-        return $this->morphedByMany(Post::class, 'likable');
+        return $this->morphedByMany(Post::class, 'likables');
     }
 
     public function likeComments()
     {
-        return $this->morphedByMany(Comment::class, 'likable');
+        return $this->morphedByMany(Comment::class, 'likables');
     }
 
     public function likePost(Post $post, $like)

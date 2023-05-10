@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Interface\Likeable;
 use App\Traits\ImageTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,9 +14,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Post extends Model implements HasMedia
+class Post extends Model implements HasMedia, Likeable
 {
-    use HasFactory, InteractsWithMedia, ImageTrait;
+    use HasFactory, InteractsWithMedia, ImageTrait, LikableTrait;
 
     protected $appends = ['mainImage'];
 
