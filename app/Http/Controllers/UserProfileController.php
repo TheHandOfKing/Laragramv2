@@ -54,8 +54,10 @@ class UserProfileController extends Controller
 
         $pageTitle = $user->name . "(@" . $user->username . ")";
         $postsCount = $user->posts->count();
+        $followCount = $user->following()->count();
+        $followersCount = $user->followers()->count();
 
-        return Inertia::render('Users/Show', ['user' => $user, 'posts' => $posts, 'pageTitle' => $pageTitle, 'postsCount' => $postsCount]);
+        return Inertia::render('Users/Show', ['user' => $user, 'posts' => $posts, 'pageTitle' => $pageTitle, 'postsCount' => $postsCount, 'followCount' => $followCount, 'followersCount' => $followersCount]);
     }
 
     /**

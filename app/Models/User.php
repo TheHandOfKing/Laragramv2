@@ -135,7 +135,13 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->morphedByMany(Comment::class, 'likables');
     }
-
+    /**
+     * This function does something.
+     *
+     * @param $modelInstance
+     * @param $like
+     * @return void
+     */
     public function likeInstance(Likeable $instance, $like)
     {
         $relationshipMethod = 'like' . class_basename(get_class($instance)) . 's';

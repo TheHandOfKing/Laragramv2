@@ -10,11 +10,15 @@
           <div class="sections">
             <span>{{ user.username }}</span>
             <Link
+              v-if="$page.props.auth.user.id == user.id"
               class="bg-white hover:bg-gray-200 text-black font-bold py-2 px-4 rounded"
               :href="route('profile.edit')"
               >Edit Profile</Link
             >
-            <span @click="activateModal" class="cursor-pointer"
+            <span
+              v-if="$page.props.auth.user.id == user.id"
+              @click="activateModal"
+              class="cursor-pointer"
               ><svg
                 aria-label="Options"
                 class="x1lliihq x1n2onr6"
@@ -44,16 +48,25 @@
                   stroke-width="2"
                 ></path></svg
             ></span>
+
+            <div class="follow" v-if="$page.props.auth.user.id != user.id">
+              <button
+                class="bg-white hover:bg-gray-200 text-black font-bold py-2 px-4 rounded"
+                @click="followUser(!followLogic.follwed)"
+              >
+                {{ followLogic.followText }}
+              </button>
+            </div>
           </div>
           <div class="sections mt-6">
             <div class="posts">
               <span class="font-bold">{{ postsCount }}</span> Posts
             </div>
             <div class="posts">
-              <span class="font-bold">472</span> followers
+              <span class="font-bold">{{ followersCount }}</span> followers
             </div>
             <div class="posts">
-              <span class="font-bold">420</span> following
+              <span class="font-bold">{{ followCount }}</span> following
             </div>
           </div>
           <div class="sections mt-6 flex-col align-start-important">
@@ -171,11 +184,22 @@ export default {
     SettingsModal,
     CreatePostModal,
   },
-  props: ["user", "posts", "pageTitle", "postsCount"],
+  props: [
+    "user",
+    "posts",
+    "pageTitle",
+    "postsCount",
+    "followersCount",
+    "followCount",
+  ],
   data() {
     return {
       isActive: false,
       createModalActive: false,
+      followLogic: {
+        followed: false,
+        followText: "Follow",
+      },
     };
   },
   computed: {
@@ -208,6 +232,23 @@ export default {
     closeCreateModal() {
       this.$store.dispatch("createPostModal/closeCreateModalAction");
     },
+
+    toggleFollowAction(param) {
+      if (param === true) {
+        this.followUser();
+      } else {
+        this.unfollowUser();
+      }
+    },
+
+    followUser() {
+      axios.post(`/follow/${this.user.slug}`).then((data) => {
+        this.followLogic.followText = "Unfollow";
+        this.followLogic.followed = true;
+      });
+    },
+
+    unfollowUser() {},
   },
 };
 </script>

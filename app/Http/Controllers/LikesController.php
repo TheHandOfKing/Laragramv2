@@ -17,9 +17,20 @@ class LikesController extends Controller
 
         $user = auth()->user();
         // Find existing like
-        if ($model == 'post') {
-            $user->likeInstance($modelInstance, 1);
+
+        if ($request->query('unlike') === 'true') {
+            $user->likeInstance($modelInstance, 0);
+
+            if (!isset($likes)) {
+                return response()->json([
+                    'status' => 200,
+                    'liked' => false,
+                ]);
+            }
         }
+
+
+        $user->likeInstance($modelInstance, 1);
     }
 
     public function getLike($model, $id)
@@ -30,7 +41,7 @@ class LikesController extends Controller
 
         switch ($model) {
             case 'post':
-                $likes = $user->likePosts()->where('likables_id', $id)->first();
+                $likes = $user->likePosts()->where('likables_id', $id)->where('like', 1)->first();
                 break;
             case 'comment':
                 $likes = $user->likeComments()->where('likables_id', $id)->first();

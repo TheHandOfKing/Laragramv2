@@ -170,24 +170,33 @@ export default {
 
   methods: {
     like(model, id) {
-      axios
-        .post(`/${model}/${id}/like`)
-        .then((response) => {
-          this.isLiked = true;
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      if (this.isLiked) {
+        axios
+          .post(`/${model}/${id}/like?unlike=true`)
+          .then((response) => {
+            this.isLiked = response.data.liked;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } else {
+        axios
+          .post(`/${model}/${id}/like`)
+          .then((response) => {
+            this.isLiked = true;
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
     },
 
     checkIsLiked(model, id) {
       axios
         .get(`/${model}/${id}/like`)
         .then((response) => {
-          console.log(response);
           this.isLiked = response.data.liked;
-          console.log(this.isLiked);
         })
         .catch((err) => {
           console.error(err);
