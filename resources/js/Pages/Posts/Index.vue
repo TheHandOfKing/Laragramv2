@@ -1,6 +1,11 @@
 <template>
   <section class="profile-info flex flex-col justify-center items-center">
-    <post :post="post" v-for="(post, index) in posts" :key="index"></post>
+    <post
+      :index="index"
+      :post="post"
+      v-for="(post, index) in posts"
+      :key="index"
+    ></post>
   </section>
 </template>
 

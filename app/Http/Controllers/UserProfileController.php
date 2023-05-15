@@ -16,7 +16,7 @@ class UserProfileController extends Controller
     {
         $posts = Post::with(['user' => function ($query) {
             $query->select(['id', 'name', 'email', 'slug', 'username']); // Add any other relevant fields
-        }])->get();
+        }])->with('comments')->get();
 
         $posts->each(function ($post) {
             $post->user->withoutMedia();

@@ -16,7 +16,9 @@
             >
           </div>
           <div class="flex items-center">
-            <div class="date text-xs mr-3">47w</div>
+            <div class="date text-xs mr-3">
+              {{ displayDate(comment.created_at) }}
+            </div>
             <div
               @click="submit(comment.id, user.username, user.id)"
               class="reply text-xs cursor-pointer"
@@ -28,7 +30,7 @@
       </div>
 
       <div class="like flex items-center cursor-pointer" style="height: 44px">
-        <span class=""
+        <span class="" @click="like"
           ><svg
             aria-label="Unlike"
             class="x1lliihq x1n2onr6"
@@ -67,6 +69,7 @@
 </template>
 <script>
 import { Link } from "@inertiajs/vue3";
+import { toHuman } from "@/helpers/momentUtils.js";
 export default {
   name: "PostCommentTemplate",
   props: ["comment", "user"],
@@ -93,6 +96,12 @@ export default {
         user_id: user_id,
         username: username,
       });
+    },
+
+    like() {},
+
+    displayDate(date) {
+      return toHuman(date);
     },
   },
 };

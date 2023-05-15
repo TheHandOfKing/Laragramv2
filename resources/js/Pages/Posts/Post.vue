@@ -1,12 +1,17 @@
 <template>
   <div class="flex justify-center post-wrap flex-col mt-6">
     <div class="top-profile-info">
-      <div class="profile-data flex items-center">
-        <img :src="post.user.profilePicture" alt="" />
+      <Link
+        :href="route('profile', post.user.slug)"
+        class="profile-data flex items-center"
+      >
+        <img class="mr-2" :src="post.user.profilePicture" alt="profile-image" />
         <span>{{ post.user.username }}</span>
-      </div>
+      </Link>
     </div>
-    <img class="post-image" :src="post.mainImage" alt="" />
+    <Link :href="route('posts.show', post.slug)">
+      <img class="post-image" :src="post.mainImage" alt="" />
+    </Link>
     <div class="post-comment p-4">
       <div class="utility-section flex justify-between">
         <div class="like-share-comment flex items-center">
@@ -16,7 +21,7 @@
                 <span :class="liked" v-html="icons.like" class=""></span>
               </div></button></span
           ><span class="mr-3"
-            ><button class="_abl-" type="button">
+            ><button @click="focusComment" class="_abl-" type="button">
               <div
                 v-html="icons.comment"
                 class="_abm0 _abm1"
@@ -36,7 +41,8 @@
         <div class="three-users-likes">
           Liked by pavlovic_marko33 and 101 others
         </div>
-        <small>{{ post.created_at }}</small>
+        <small class="mr-2">Posted {{ displayDate(post.created_at) }}</small>
+        <small>Comments: {{ commentData.commentCount }}</small>
       </div>
 
       <div class="post-a-comment flex">
@@ -44,7 +50,8 @@
           v-model="comment.body"
           type="text"
           name=""
-          id=""
+          @keyup.enter="onCommentSubmit"
+          :id="commentBodyId"
           class="block text-sm w-full font-medium text-gray-900 border-none outline-none"
           style="height: 22px"
           placeholder="Add a comment"
@@ -61,8 +68,13 @@
 </template>
 
 <script>
+import { Link } from "@inertiajs/vue3";
+import { toHuman } from "@/helpers/momentUtils.js";
 export default {
-  props: ["post"],
+  components: {
+    Link,
+  },
+  props: ["post", "index"],
 
   created() {
     this.checkIsLiked("post", this.post.id);
@@ -71,6 +83,10 @@ export default {
   computed: {
     liked() {
       return this.isLiked ? "liked" : "default";
+    },
+
+    commentBodyId() {
+      return "comment-body-" + this.index;
     },
   },
 
@@ -159,16 +175,22 @@ export default {
           ></polygon>
         </svg>`,
       },
-
-      isLiked: false,
-
+      commentData: {
+        commentCount: this.post.comments.length,
+        subbmitting: false,
+      },
       comment: {
         body: "",
+        post_id: this.post.id,
       },
+      isLiked: false,
     };
   },
 
   methods: {
+    displayDate(date) {
+      return toHuman(date);
+    },
     like(model, id) {
       if (this.isLiked) {
         axios
@@ -192,6 +214,11 @@ export default {
       }
     },
 
+    focusComment() {
+      let commentBody = document.getElementById("comment-body-" + this.index);
+      commentBody.focus();
+    },
+
     checkIsLiked(model, id) {
       axios
         .get(`/${model}/${id}/like`)
@@ -201,6 +228,24 @@ export default {
         .catch((err) => {
           console.error(err);
         });
+    },
+
+    onCommentSubmit() {
+      if (!this.commentData.subbmitting) {
+        this.commentData.subbmitting = true;
+        axios
+          .post(this.route("comments.store", this.comment))
+          .then((data) => {
+            // Do something i guess?
+            this.commentData.commentCount += 1;
+            this.comment.body = "";
+            this.commentData.subbmitting = false;
+          })
+          .catch((err) => {
+            this.commentData.subbmitting = false;
+            console.error(err);
+          });
+      }
     },
   },
 };
@@ -223,8 +268,9 @@ export default {
   max-width: 468px;
 
   .top-profile-info {
-    height: 40px;
+    height: 50px;
     border-bottom: 1px solid gray;
+    padding: 10px;
   }
 
   .post-image {
