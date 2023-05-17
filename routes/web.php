@@ -58,6 +58,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/{user}/following', [FollowersController::class, 'following'])->name('following');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/messages', [MessagingController::class, 'index'])->name('messages');
+});
+
 // Media routes
 Route::middleware('auth')->group(function () {
     Route::post('/media/update-media/{modelType}/{modelId}/{collection}', [MediaController::class, 'store'])->name('model.updateMedia');
