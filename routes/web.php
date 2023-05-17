@@ -1,9 +1,11 @@
 <?php
 
+use App\Events\MessageNotification;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowersController;
 use App\Http\Controllers\LikesController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\MessagingController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserProfileController;
@@ -46,26 +48,29 @@ Route::get('/{model}/{id}/like', [LikesController::class, 'getLike'])->name('lik
 
 
 Route::middleware('auth')->group(function () {
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-//Follower logic
-Route::middleware(['auth'])->group(function () {
+    // Media routes
+    Route::post('/media/update-media/{modelType}/{modelId}/{collection}', [MediaController::class, 'store'])->name('model.updateMedia');
+    Route::delete('/media/delete-media/{media}', [MediaController::class, 'destroy'])->name('model.deleteMedia');
+    // Follower logic
     Route::post('/follow/{user}', [FollowersController::class, 'follow'])->name('follow');
     Route::get('/{user}/followers', [FollowersController::class, 'followers'])->name('followers');
     Route::get('/{user}/following', [FollowersController::class, 'following'])->name('following');
+    // Messages
+    Route::get('/messages', [MessagingController::class, 'index'])->name('messages.index');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/messages', [MessagingController::class, 'index'])->name('messages');
+// Notifications
+
+Route::get('/event', function () {
+    event(new MessageNotification('Broadcast test'));
 });
 
-// Media routes
-Route::middleware('auth')->group(function () {
-    Route::post('/media/update-media/{modelType}/{modelId}/{collection}', [MediaController::class, 'store'])->name('model.updateMedia');
-    Route::delete('/media/delete-media/{media}', [MediaController::class, 'destroy'])->name('model.deleteMedia');
+Route::get('/listen', function () {
+    return Inertia::render('Listen');
 });
 
 require __DIR__ . '/auth.php';

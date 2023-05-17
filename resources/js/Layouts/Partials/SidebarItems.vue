@@ -202,7 +202,7 @@ export default {
           </svg>`,
           name: "Messages",
           type: "url",
-          url: this.route("dashboard"),
+          url: this.route("messages.index"),
         },
 
         {
