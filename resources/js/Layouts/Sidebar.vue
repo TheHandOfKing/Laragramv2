@@ -43,13 +43,31 @@
       </div>
     </div>
   </div>
+
+  <create-post-modal
+    style="width: 100%; height: 100%"
+    v-if="createPostModalOpen"
+    @close-modal="closeCreateModal"
+  ></create-post-modal>
 </template>
 
 <script>
 import SidebarItems from "./Partials/SidebarItems.vue";
 import MoreButton from "./Partials/MoreButton.vue";
+import CreatePostModal from "@/Components/CreatePostModal.vue";
 export default {
-  components: { SidebarItems, MoreButton },
+  components: { SidebarItems, MoreButton, CreatePostModal },
+  computed: {
+    createPostModalOpen() {
+      return this.$store.state.createPostModal.createPostModal;
+    },
+  },
+
+  methods: {
+    closeCreateModal() {
+      this.$store.dispatch("createPostModal/closeCreateModalAction");
+    },
+  },
 };
 </script>
 

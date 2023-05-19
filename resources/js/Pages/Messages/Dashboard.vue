@@ -55,8 +55,17 @@
               </div>
             </div>
           </div>
-          <div class="chat-users"></div>
-          <chat-option></chat-option>
+          <div class="chat-users" v-if="options.length > 0">
+            <chat-option
+              v-for="(option, index) in options"
+              :key="index"
+            ></chat-option>
+          </div>
+          <div class="no-chat" v-else>
+            <div class="no-chat-text text-white p-6">
+              No chats, find a person to chat with.
+            </div>
+          </div>
         </div>
         <div class="chat-content"></div>
       </div>
@@ -71,6 +80,11 @@ import { Head, Link } from "@inertiajs/vue3";
 
 export default {
   components: { Head, Link, AuthenticatedLayout, ChatOption },
+  data() {
+    return {
+      options: [0, 1, 2, 3, 4, 5],
+    };
+  },
 };
 </script>
 
@@ -108,6 +122,27 @@ export default {
       position: relative;
       vertical-align: baseline;
       width: 350px;
+
+      .chat-users {
+        overflow-y: scroll;
+      }
+
+      .chat-users::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      .chat-users::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      .chat-users::-webkit-scrollbar-thumb {
+        background: #5f5f5f;
+        border-radius: 5px;
+      }
+
+      .chat-users::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
 
       .profile {
         background-color: rgb(0, 0, 0);

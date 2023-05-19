@@ -160,12 +160,6 @@
         v-if="isActive"
         @close-modal="closeModal"
       ></settings-modal>
-
-      <create-post-modal
-        style="width: 100%; height: 100%"
-        v-if="createPostModalOpen"
-        @close-modal="closeCreateModal"
-      ></create-post-modal>
     </div>
   </AuthenticatedLayout>
 </template>
@@ -174,7 +168,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link } from "@inertiajs/vue3";
 import SettingsModal from "@/Components/SettingsModal.vue";
-import CreatePostModal from "@/Components/CreatePostModal.vue";
 
 export default {
   components: {
@@ -182,7 +175,6 @@ export default {
     Head,
     Link,
     SettingsModal,
-    CreatePostModal,
   },
   props: [
     "user",
@@ -203,9 +195,6 @@ export default {
     };
   },
   computed: {
-    createPostModalOpen() {
-      return this.$store.state.createPostModal.createPostModal;
-    },
     postRows() {
       const posts = this.posts.data;
       const chunked = [];
@@ -228,10 +217,6 @@ export default {
     },
 
     toggleData(model) {},
-
-    closeCreateModal() {
-      this.$store.dispatch("createPostModal/closeCreateModalAction");
-    },
 
     toggleFollowAction(param) {
       if (param === true) {
