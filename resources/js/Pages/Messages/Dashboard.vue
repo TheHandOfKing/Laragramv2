@@ -1,7 +1,12 @@
 <template>
   <Head :title="pageTitle" />
   <AuthenticatedLayout>
-    <div class="messages">
+    <div class="messages relative">
+      <chat-modal
+        @close-modal="closeChatModal"
+        v-if="chatModal"
+        :users="users"
+      ></chat-modal>
       <div class="message-box flex">
         <div class="chat-options">
           <div class="profile">
@@ -67,7 +72,10 @@
             </div>
           </div>
         </div>
-        <div class="chat-content flex flex-col w-full">
+        <div
+          v-if="currentChatId != null"
+          class="chat-content flex flex-col w-full"
+        >
           <div class="chat-header flex w-full p-2 border">
             <div class="user-data">
               <Link
@@ -97,6 +105,8 @@
             <button @click="sendMessage">Send</button>
           </div>
         </div>
+
+        <compose-chat @openModal="openModal" v-else></compose-chat>
       </div>
     </div>
   </AuthenticatedLayout>
@@ -105,17 +115,29 @@
 <script>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ChatOption from "@/Pages/Messages/Partials/ChatOption.vue";
+import ComposeChat from "@/Pages/Messages/Partials/ComposeChat.vue";
+import ChatModal from "@/Pages/Messages/Partials/ChatModal.vue";
 import Chat from "@/Pages/Messages/Partials/Chat.vue";
 import { Head, Link } from "@inertiajs/vue3";
 
 export default {
-  components: { Head, Link, AuthenticatedLayout, ChatOption, Chat },
+  props: ["chats", "users"],
+  components: {
+    Head,
+    Link,
+    AuthenticatedLayout,
+    ChatOption,
+    Chat,
+    ComposeChat,
+    ChatModal,
+  },
   data() {
     return {
-      options: [0, 1, 2, 3, 4, 5],
+      options: this.chats,
       currentChatId: null,
       selectedUser: {},
       messages: [],
+      chatModal: false,
     };
   },
 
@@ -133,6 +155,14 @@ export default {
 
     handleIncomingMessage(message) {
       this.messages.push(message);
+    },
+
+    openModal() {
+      this.chatModal = true;
+    },
+
+    closeChatModal() {
+      this.chatModal = false;
     },
   },
 };

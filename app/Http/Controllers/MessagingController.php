@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Chat;
 use App\Events\NewMessage;
 use App\Models\Message;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -19,7 +21,8 @@ class MessagingController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Messages/Dashboard');
+        $chats = auth()->user()->chats;
+        return Inertia::render('Messages/Dashboard', ['chats' => $chats]);
     }
 
     /**

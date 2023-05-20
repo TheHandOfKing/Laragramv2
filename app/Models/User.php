@@ -58,7 +58,7 @@ class User extends Authenticatable implements HasMedia
 
     public function chats()
     {
-        return $this->hasMany(Chat::class);
+        return $this->hasMany(Chat::class, 'chatter_id');
     }
 
     /**
