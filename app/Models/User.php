@@ -56,6 +56,11 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at' => 'datetime',
     ];
 
+    public function chats()
+    {
+        return $this->hasMany(Chat::class);
+    }
+
     /**
      * A user can have many messages
      *
@@ -85,6 +90,18 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(Post::class);
     }
+
+    // Like Logic
+    public function likePosts()
+    {
+        return $this->morphedByMany(Post::class, 'likables');
+    }
+
+    public function likeComments()
+    {
+        return $this->morphedByMany(Comment::class, 'likables');
+    }
+
 
     public function getRouteKeyName()
     {
@@ -135,18 +152,8 @@ class User extends Authenticatable implements HasMedia
         return $text;
     }
 
-    // Like Logic
-    public function likePosts()
-    {
-        return $this->morphedByMany(Post::class, 'likables');
-    }
-
-    public function likeComments()
-    {
-        return $this->morphedByMany(Comment::class, 'likables');
-    }
     /**
-     * This function does something.
+     * Liking functionality.
      *
      * @param $modelInstance
      * @param $like

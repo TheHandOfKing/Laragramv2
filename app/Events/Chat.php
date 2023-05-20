@@ -10,16 +10,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageNotification implements ShouldBroadcast
+class Chat implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $username;
     public $message;
     /**
      * Create a new event instance.
      */
-    public function __construct($message)
+    public function __construct($username, $message)
     {
+        $this->username = $username;
         $this->message = $message;
     }
 
@@ -31,7 +33,12 @@ class MessageNotification implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('notification'),
+            new Channel('chat'),
         ];
+    }
+
+    public function broadcastAs()
+    {
+        return 'chatting';
     }
 }
