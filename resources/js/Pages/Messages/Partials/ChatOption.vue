@@ -12,7 +12,6 @@
                   :src="$page.props.auth.user.profilePicture"
                   alt="profile-image"
                 />
-                <span></span>
               </Link>
             </div>
             <div class="message-date text-white flex flex-col">

@@ -61,6 +61,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/{user}/following', [FollowersController::class, 'following'])->name('following');
     // Messages
     Route::get('/messages', [MessagingController::class, 'index'])->name('messages.index');
+    Route::get('/messages/fetch', [MessagingController::class, 'fetchMessages'])->name('messages.fetch');
+    Route::post('/message', [MessagingController::class, 'store']);
 });
 
 // Notifications

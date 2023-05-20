@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewMessage;
+use App\Models\Message;
+use Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class MessagingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -28,7 +35,15 @@ class MessagingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $message = Message::create([
+            'from_id' => auth()->id(),
+            'to_id' => $request->receiver_id,
+            'message' => $request->text_message
+        ]);
+
+        broadcast(new NewMessage($message));
+
+        return response()->json($message);
     }
 
     /**
@@ -61,5 +76,28 @@ class MessagingController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+    public function fetchMessages()
+    {
+        return Message::with('user')->get();
+    }
+
+    /**
+     * Persist message to database
+     *
+     * @param  Request $request
+     * @return Response
+     */
+    public function sendMessage(Request $request)
+    {
+        $user = Auth::user();
+
+        $user->messages()->create([
+            'message' => $request->input('message')
+        ]);
+
+        return ['status' => 'Message Sent!'];
     }
 }

@@ -2,7 +2,7 @@
   <Head :title="pageTitle" />
   <AuthenticatedLayout>
     <div class="messages">
-      <div class="message-box">
+      <div class="message-box flex">
         <div class="chat-options">
           <div class="profile">
             <div class="flex wrap">
@@ -67,7 +67,36 @@
             </div>
           </div>
         </div>
-        <div class="chat-content"></div>
+        <div class="chat-content flex flex-col w-full">
+          <div class="chat-header flex w-full p-2 border">
+            <div class="user-data">
+              <Link
+                class="flex items-center"
+                :href="route('profile', $page.props.auth.user.id)"
+              >
+                <img
+                  style="border-radius: 50%; height: 44px; width: 44px"
+                  class="mr-2"
+                  :src="$page.props.auth.user.profilePicture"
+                  alt="profile-image"
+                />
+                <span>Marko Pavlovic, 24</span>
+              </Link>
+            </div>
+            <div class="options"></div>
+          </div>
+          <div class="chat-content h-full">
+            <chat></chat>
+          </div>
+          <div class="chat-input flex border">
+            <input
+              type="text"
+              v-model="newMessage"
+              @keydown.enter="sendMessage"
+            />
+            <button @click="sendMessage">Send</button>
+          </div>
+        </div>
       </div>
     </div>
   </AuthenticatedLayout>
@@ -76,14 +105,35 @@
 <script>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ChatOption from "@/Pages/Messages/Partials/ChatOption.vue";
+import Chat from "@/Pages/Messages/Partials/Chat.vue";
 import { Head, Link } from "@inertiajs/vue3";
 
 export default {
-  components: { Head, Link, AuthenticatedLayout, ChatOption },
+  components: { Head, Link, AuthenticatedLayout, ChatOption, Chat },
   data() {
     return {
       options: [0, 1, 2, 3, 4, 5],
+      currentChatId: null,
+      selectedUser: {},
+      messages: [],
     };
+  },
+
+  methods: {
+    selectChat(id) {
+      this.currentChatId = id;
+      axios.get("/api/chat/" + id).then((response) => {
+        this.messages = response.data;
+      });
+
+      window.Echo.private(`messages.${id}`).listen("NewMessage", (e) => {
+        this.handleIncomingMessage(e.message);
+      });
+    },
+
+    handleIncomingMessage(message) {
+      this.messages.push(message);
+    },
   },
 };
 </script>
@@ -103,6 +153,7 @@ export default {
     width: 100%;
     border: 1px solid black;
     border-radius: 4px;
+    flex-direction: row;
 
     .chat-options {
       align-items: stretch;
