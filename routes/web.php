@@ -33,7 +33,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', [UserProfileController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/profiles/{user:slug}', [UserProfileController::class, 'show'])->middleware(['ensureProfileIsVisible'])->name('profile');
 // Posts
@@ -42,12 +41,9 @@ Route::get('/p/{post:slug}', [PostController::class, 'show'])->name('posts.show'
 // Comments
 Route::resource('comments', CommentController::class, ['except' => ['create, show']]);
 
-//Like
-Route::post('/{model}/{id}/like', [LikesController::class, 'like'])->name('like');
-Route::get('/{model}/{id}/like', [LikesController::class, 'getLike'])->name('like.get');
-
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [UserProfileController::class, 'index'])->middleware(['verified'])->name('dashboard');
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -63,16 +59,20 @@ Route::middleware('auth')->group(function () {
     Route::get('/messages', [MessagingController::class, 'index'])->name('messages.index');
     Route::get('/messages/fetch', [MessagingController::class, 'fetchMessages'])->name('messages.fetch');
     Route::post('/message', [MessagingController::class, 'store']);
+    //Like
+    Route::post('/{model}/{id}/like', [LikesController::class, 'like'])->name('like');
+    Route::get('/{model}/{id}/like', [LikesController::class, 'getLike'])->name('like.get');
 });
 
 // Notifications
 
-Route::get('/event', function () {
-    event(new MessageNotification('Broadcast test'));
-});
+// Route::get('/event', function () {
+//     event(new MessageNotification('Broadcast test'));
+// });
 
 Route::get('/listen', function () {
     return Inertia::render('Listen');
 });
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/api-v1.php';

@@ -43,14 +43,21 @@
             To:
             <input
               type="text"
-              v-model="searchTerm"
+              v-model="search"
               @keyup="fetchData"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 ml-5"
               placeholder="Search"
             />
           </div>
 
-          <div class="user-list" v-if="users.length > 0"></div>
+          <div class="user-list" v-if="users.length > 0">
+            <user-to-chat
+              @start-chat="startChat"
+              v-for="(user, index) in users"
+              :key="index"
+              :user="user"
+            ></user-to-chat>
+          </div>
           <div class="no-found" v-else>No account found.</div>
         </div>
         <!-- Modal footer -->
@@ -75,7 +82,7 @@ export default {
   data() {
     return {
       users: [],
-      searchTerm: "",
+      search: "",
     };
   },
 
@@ -83,16 +90,19 @@ export default {
     closeModal() {
       this.$emit("closeModal");
     },
+    startChat() {
+      console.log("chat started");
+    },
     fetchData() {
       axios
-        .get("http://example.com/api/search", {
+        .get(this.route("api.users"), {
           params: {
-            q: this.searchTerm,
+            search: this.search,
           },
         })
         .then((response) => {
-          console.log(response.data);
-          // You probably want to do something with the result here.
+          this.users = [];
+          this.users = response.data;
         })
         .catch((error) => {
           console.error(error);
