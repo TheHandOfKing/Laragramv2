@@ -14,14 +14,20 @@ class UserController extends Controller
     {
         $query = $request->input('search');
 
+        $userId = auth()->id();
+
         $followers = auth()->user()->followers();
 
-        $followersResults = $followers->where(function ($queryBuilder) use ($query) {
+        $followersResults = $followers->where('followers.user_id', '!=', $userId)->doesntHave('roles', 'and', function ($query) {
+            $query->where('name', 'admin');
+        })->where(function ($queryBuilder) use ($query) {
             $queryBuilder->where('username', 'LIKE', '%' . $query . '%')
                 ->orWhere('name', 'LIKE', '%' . $query . '%');
         })->get();
 
-        $otherUsersResults = User::whereNotIn('id', $followers->pluck('id'))
+        $otherUsersResults = User::where('users.id', '!=', $userId)->doesntHave('roles', 'and', function ($query) {
+            $query->where('name', 'admin');
+        })->whereNotIn('users.id', $followers->pluck('user_id'))
             ->where(function ($queryBuilder) use ($query) {
                 $queryBuilder->where('username', 'LIKE', '%' . $query . '%')
                     ->orWhere('name', 'LIKE', '%' . $query . '%');

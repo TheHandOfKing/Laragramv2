@@ -9,16 +9,21 @@
                 <img
                   class="mr-2"
                   style="border-radius: 50%"
-                  :src="$page.props.auth.user.profilePicture"
+                  :src="option.receiver.profilePicture"
                   alt="profile-image"
                 />
               </Link>
             </div>
-            <div class="message-date text-white flex flex-col">
-              <div class="username">Kruks</div>
+            <div class="message-date text-white flex flex-col ml-4">
+              <div class="username">{{ option.receiver.username }}</div>
               <div class="wrap flex">
-                <div class="message">:D</div>
-                <div class="date">52m</div>
+                <div v-if="option.messages.length > 0" class="message">
+                  <div class="date">{{ option.messages }}</div>
+                  <div class="date">52m</div>
+                </div>
+                <div v-else class="message">
+                  <small>Start Chatting!</small>
+                </div>
               </div>
             </div>
           </div>
@@ -31,6 +36,7 @@
 <script>
 import { Link } from "@inertiajs/vue3";
 export default {
+  props: ["option"],
   components: { Link },
 };
 </script>

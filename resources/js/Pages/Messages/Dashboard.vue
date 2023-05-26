@@ -2,17 +2,15 @@
   <Head :title="pageTitle" />
   <AuthenticatedLayout>
     <div class="messages relative">
-      <chat-modal
-        @close-modal="closeChatModal"
-        v-if="chatModal"
-        :users="users"
-      ></chat-modal>
+      <chat-modal @close-modal="closeChatModal" v-if="chatModal"></chat-modal>
       <div class="message-box flex">
         <div class="chat-options">
           <div class="profile">
             <div class="flex wrap">
               <div class="mr-5"></div>
-              <div class="profile-name">Kruks 24</div>
+              <div class="profile-name">
+                {{ $page.props.auth.user.username }}
+              </div>
               <div class="compose-message ml-6">
                 <button>
                   <div>
@@ -64,6 +62,7 @@
             <chat-option
               v-for="(option, index) in options"
               :key="index"
+              :option="option"
             ></chat-option>
           </div>
           <div class="no-chat" v-else>

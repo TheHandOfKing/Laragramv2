@@ -78,7 +78,11 @@
 </template>
 
 <script>
+import UserToChat from "./UserToChat.vue";
 export default {
+  components: {
+    UserToChat,
+  },
   data() {
     return {
       users: [],
@@ -90,8 +94,15 @@ export default {
     closeModal() {
       this.$emit("closeModal");
     },
-    startChat() {
-      console.log("chat started");
+    startChat(user) {
+      axios
+        .post("/api/chat", { other_chatter_id: user.id })
+        .then((response) => {
+          this.$store.dispatch("setUsersChat/startChat", user);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     },
     fetchData() {
       axios
@@ -113,4 +124,25 @@ export default {
 </script>
 
 <style>
+.user-list {
+  overflow-y: scroll;
+  height: 200px;
+}
+
+.user-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.user-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+  background: #5f5f5f;
+  border-radius: 5px;
+}
+
+.user-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 </style>

@@ -21,4 +21,14 @@ class Chat extends Model
         // This means that the newest messages will be returned first.
         return $this->hasMany(Message::class)->orderBy('created_at', 'desc');;
     }
+
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'chatter_id');
+    }
+
+    public function receiver()
+    {
+        return $this->belongsTo(User::class, 'other_chatter_id');
+    }
 }

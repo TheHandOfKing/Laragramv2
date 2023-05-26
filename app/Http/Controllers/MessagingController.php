@@ -21,7 +21,16 @@ class MessagingController extends Controller
      */
     public function index()
     {
-        $chats = auth()->user()->chats;
+        $chats = auth()->user()->chats()
+            ->with([
+                'receiver' => function ($query) {
+                    $query->select('id', 'username');
+                },
+                'messages' => function ($query) {
+                    $query->orderBy('created_at', 'desc');
+                }
+            ])->get();
+
         return Inertia::render('Messages/Dashboard', ['chats' => $chats]);
     }
 
@@ -104,7 +113,7 @@ class MessagingController extends Controller
         return ['status' => 'Message Sent!'];
     }
 
-    public function searchUsers(Request $request) {
-        
+    public function searchUsers(Request $request)
+    {
     }
 }
