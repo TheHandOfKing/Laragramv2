@@ -4,10 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateChatRequest;
 use App\Models\Chat;
+use App\Repositories\ChatRepository;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
+    protected $chatRepository;
+
+    public function __construct(ChatRepository $chatRepository)
+    {
+        $this->chatRepository = $chatRepository;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -29,16 +36,7 @@ class ChatController extends Controller
      */
     public function store(CreateChatRequest $request)
     {
-
-        $chat = new Chat;
-        $chat->chatter_id = auth()->user()->id; // The ID of the logged in user
-        $chat->other_chatter_id = $request->other_chatter_id; // The ID of the user to chat with
-        $chat->save();
-
-        return response()->json([
-            'message' => 'Chat started successfully.',
-            'chat' => $chat
-        ]);
+        return $this->chatRepository->createChat($request);
     }
 
     /**

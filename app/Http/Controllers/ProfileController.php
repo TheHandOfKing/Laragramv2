@@ -20,7 +20,6 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        /** @var Collection|Media[] $imageData */
         $imageData = $user->getMedia('profile-picture');
 
         $media = array();

@@ -17,7 +17,7 @@ class EnsureProfileIsVisible
     public function handle(Request $request, Closure $next): Response
     {
         $user = User::where('slug', $request->route('user.slug'))->firstOrFail();
-        if ($user->canViewProfile(auth()->user())) {
+        if ($user->canViewProfile()) {
             return $next($request);
         }
 

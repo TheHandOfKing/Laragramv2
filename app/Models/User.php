@@ -119,9 +119,9 @@ class User extends Authenticatable implements HasMedia
         $this->attributes['slug'] = $this->str_slug($value);
     }
 
-    public function canViewProfile(User $user)
+    public function canViewProfile()
     {
-        return !$this->private || $user->is($this) || $user->following->contains($this);
+        return $this->private;
     }
 
 

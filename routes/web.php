@@ -34,7 +34,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('/profiles/{user:slug}', [UserProfileController::class, 'show'])->middleware(['ensureProfileIsVisible'])->name('profile');
+Route::get('/profiles/{user:slug}', [UserProfileController::class, 'show'])->name('profile');
 // Posts
 Route::resource('posts', PostController::class)->except('index', 'create', 'show');
 Route::get('/p/{post:slug}', [PostController::class, 'show'])->name('posts.show')->middleware(['auth', 'verified']);

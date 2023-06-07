@@ -112,8 +112,4 @@ class MessagingController extends Controller
 
         return ['status' => 'Message Sent!'];
     }
-
-    public function searchUsers(Request $request)
-    {
-    }
 }

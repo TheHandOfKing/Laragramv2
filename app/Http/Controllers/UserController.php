@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    protected $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -14,28 +21,7 @@ class UserController extends Controller
     {
         $query = $request->input('search');
 
-        $userId = auth()->id();
-
-        $followers = auth()->user()->followers();
-
-        $followersResults = $followers->where('followers.user_id', '!=', $userId)->doesntHave('roles', 'and', function ($query) {
-            $query->where('name', 'admin');
-        })->where(function ($queryBuilder) use ($query) {
-            $queryBuilder->where('username', 'LIKE', '%' . $query . '%')
-                ->orWhere('name', 'LIKE', '%' . $query . '%');
-        })->get();
-
-        $otherUsersResults = User::where('users.id', '!=', $userId)->doesntHave('roles', 'and', function ($query) {
-            $query->where('name', 'admin');
-        })->whereNotIn('users.id', $followers->pluck('user_id'))
-            ->where(function ($queryBuilder) use ($query) {
-                $queryBuilder->where('username', 'LIKE', '%' . $query . '%')
-                    ->orWhere('name', 'LIKE', '%' . $query . '%');
-            })->get();
-
-        $results = $followersResults->concat($otherUsersResults);
-
-        return $results;
+        return $this->userRepository->returnUserFollowersWithoutAdmin($query);
     }
 
     /**

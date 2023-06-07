@@ -15,14 +15,4 @@ class FollowersController extends Controller
 
         return back();
     }
-
-    public function followers(User $user)
-    {
-        return $user->followers;
-    }
-
-    public function following(User $user)
-    {
-        return $user->following;
-    }
 }
