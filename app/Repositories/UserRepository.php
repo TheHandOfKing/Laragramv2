@@ -27,7 +27,7 @@ class UserRepository
 	 * 
 	 */
 
-	public function returnUserFollowersWithoutAdmin(String $searchTerm): Collection
+	public function returnUserFollowersWithoutAdmin(?string $searchTerm): Collection
 	{
 		$followers = auth()->user()->followers();
 

@@ -79,6 +79,8 @@
 
 <script>
 import UserToChat from "./UserToChat.vue";
+import _ from "lodash";
+
 export default {
   components: {
     UserToChat,
@@ -104,7 +106,8 @@ export default {
           console.error(error);
         });
     },
-    fetchData() {
+
+    fetchData: _.debounce(function () {
       axios
         .get(this.route("api.users"), {
           params: {
@@ -118,7 +121,7 @@ export default {
         .catch((error) => {
           console.error(error);
         });
-    },
+    }, 300), // Adjust this delay as needed
   },
 };
 </script>

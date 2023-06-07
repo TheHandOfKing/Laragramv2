@@ -20,7 +20,6 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('search');
-
         return $this->userRepository->returnUserFollowersWithoutAdmin($query);
     }
 

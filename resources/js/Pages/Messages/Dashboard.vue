@@ -63,6 +63,7 @@
               v-for="(option, index) in options"
               :key="index"
               :option="option"
+              @click="test(option.receiver)"
             ></chat-option>
           </div>
           <div class="no-chat" v-else>
@@ -72,28 +73,31 @@
           </div>
         </div>
         <div
-          v-if="currentChatId != null"
+          v-if="currentChatter != null"
           class="chat-content flex flex-col w-full"
         >
           <div class="chat-header flex w-full p-2 border">
             <div class="user-data">
               <Link
                 class="flex items-center"
-                :href="route('profile', $page.props.auth.user.id)"
+                :href="route('profile', currentChatter)"
               >
                 <img
                   style="border-radius: 50%; height: 44px; width: 44px"
                   class="mr-2"
-                  :src="$page.props.auth.user.profilePicture"
+                  :src="currentChatter.profilePicture"
                   alt="profile-image"
                 />
-                <span>Marko Pavlovic, 24</span>
+                <span
+                  >{{ currentChatter.name }},
+                  {{ currentChatter.username }}</span
+                >
               </Link>
             </div>
             <div class="options"></div>
           </div>
           <div class="chat-content h-full">
-            <chat></chat>
+            <chat :messages="messages"></chat>
           </div>
           <div class="chat-input flex border">
             <input
@@ -130,10 +134,14 @@ export default {
     ComposeChat,
     ChatModal,
   },
+  computed: {
+    currentChatter() {
+      return this.$store.getters["setUsersChat/getChatUser"];
+    },
+  },
   data() {
     return {
       options: this.chats,
-      currentChatId: null,
       selectedUser: {},
       messages: [],
       chatModal: false,
@@ -141,15 +149,17 @@ export default {
   },
 
   methods: {
-    selectChat(id) {
-      this.currentChatId = id;
-      axios.get("/api/chat/" + id).then((response) => {
+    test(user) {
+      console.log(user);
+      axios.get("/api/chat/" + user.id).then((response) => {
+        console.log(response);
         this.messages = response.data;
+        this.$store.dispatch("setUsersChat/startChat", user);
       });
 
-      window.Echo.private(`messages.${id}`).listen("NewMessage", (e) => {
-        this.handleIncomingMessage(e.message);
-      });
+      // window.Echo.private(`messages.${user.id}`).listen("NewMessage", (e) => {
+      //   this.handleIncomingMessage(e.message);
+      // });
     },
 
     handleIncomingMessage(message) {

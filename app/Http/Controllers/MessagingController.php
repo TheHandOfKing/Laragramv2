@@ -24,7 +24,7 @@ class MessagingController extends Controller
         $chats = auth()->user()->chats()
             ->with([
                 'receiver' => function ($query) {
-                    $query->select('id', 'username');
+                    $query->select('id', 'username', 'name');
                 },
                 'messages' => function ($query) {
                     $query->orderBy('created_at', 'desc');

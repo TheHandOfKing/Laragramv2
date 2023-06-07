@@ -27,6 +27,7 @@ class ChatRepository
 
 		return response()->json([
 			'message' => 'Chat started successfully.',
+			'action' => 'redirect_to_chat',
 			'chat' => $new_chat
 		]);
 	}

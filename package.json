@@ -24,6 +24,7 @@
         "@tiptap/pm": "^2.0.3",
         "@tiptap/starter-kit": "^2.0.3",
         "@tiptap/vue-3": "^2.0.3",
+        "lodash": "^4.17.21",
         "moment": "^2.29.4",
         "vuex": "^4.1.0"
     }

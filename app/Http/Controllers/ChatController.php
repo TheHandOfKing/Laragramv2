@@ -20,7 +20,6 @@ class ChatController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -44,7 +43,7 @@ class ChatController extends Controller
      */
     public function show(Chat $chat)
     {
-        //
+        return 5;
     }
 
     /**
