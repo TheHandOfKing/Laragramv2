@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Interface\Likeable;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Services\ModelService;
 use Illuminate\Http\Request;
 
 use function PHPUnit\Framework\isEmpty;
@@ -13,7 +14,7 @@ class LikesController extends Controller
 {
     public function like(Request $request, $model, $id)
     {
-        $modelInstance = $this->getModelInstance($model, $id);
+        $modelInstance = ModelService::getModelInstance($model, $id);
 
         $user = auth()->user();
         // Find existing like
@@ -59,16 +60,5 @@ class LikesController extends Controller
             'status' => 200,
             'liked' => true,
         ]);
-    }
-
-    private function getModelInstance($model, $id)
-    {
-        $class = match ($model) {
-            'post' => Post::class,
-            'comment' => Comment::class,
-            default => abort(400, 'Invalid model type'),
-        };
-
-        return $class::findOrFail($id);
     }
 }

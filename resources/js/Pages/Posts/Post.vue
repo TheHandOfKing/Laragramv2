@@ -33,7 +33,12 @@
         </div>
 
         <div class="save">
-          <div v-html="icons.save" class="_abm0 _abm1"></div>
+          <div
+            @click="savePost(post.id)"
+            v-html="icons.save"
+            :class="saved"
+            class="_abm0 _abm1 cursor-pointer"
+          ></div>
         </div>
       </div>
 
@@ -89,6 +94,10 @@ export default {
   computed: {
     liked() {
       return this.isLiked ? "liked" : "default";
+    },
+
+    saved() {
+      return this.isSaved ? "saved" : "default";
     },
 
     commentBodyId() {
@@ -194,6 +203,11 @@ export default {
           ></polygon>
         </svg>`,
       },
+      postData: {
+        likesCount: this.post.likes_count,
+        usersFromLikes: this.post.usersFromLikes,
+        totalLikes: this.post.totalLikes,
+      },
       commentData: {
         commentCount: this.post.comments_count,
         subbmitting: false,
@@ -203,6 +217,7 @@ export default {
         post_id: this.post.id,
       },
       isLiked: false,
+      isSaved: false,
     };
   },
 
@@ -210,6 +225,7 @@ export default {
     displayDate(date) {
       return toHuman(date);
     },
+
     like(model, id) {
       if (this.isLiked) {
         axios
@@ -263,6 +279,29 @@ export default {
           .catch((err) => {
             this.commentData.subbmitting = false;
             console.error(err);
+          });
+      }
+    },
+
+    savePost(id) {
+      if (this.isSaved) {
+        axios
+          .post(`/${model}/${id}/save?unsave=true`)
+          .then((response) => {
+            this.isSaved = response.data.saved;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } else {
+        axios
+          .post(`/${model}/${id}/save`)
+          .then((response) => {
+            this.isSaved = true;
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
           });
       }
     },
