@@ -38,9 +38,15 @@
       </div>
 
       <div class="post-metadata">
-        <div class="three-users-likes">
-          Liked by pavlovic_marko33 and 101 others
+        <div class="three-users-likes" v-if="post.likes_count > 0">
+          <span>Liked by </span>
+          <span v-for="(user, index) in likesMessage.users" :key="index">
+            <Link :href="route('profile', user.slug)">{{ user.username }}</Link
+            ><span v-if="index < likesMessage.users.length - 1">, </span>
+          </span>
+          <span>{{ likesMessage.otherLikes }}</span>
         </div>
+        <div v-else>{{ likesMessage }}</div>
         <small class="mr-2">Posted {{ displayDate(post.created_at) }}</small>
         <small>Comments: {{ commentData.commentCount }}</small>
       </div>
@@ -87,6 +93,19 @@ export default {
 
     commentBodyId() {
       return "comment-body-" + this.index;
+    },
+
+    likesMessage() {
+      if (this.post.likes_count === 0) return `No one liked this yet!`;
+      let users = this.post.usersFromLikes.map((user) => ({
+        slug: user.slug,
+        username: user.username,
+      }));
+
+      return {
+        users,
+        otherLikes: ` and ${this.post.totalLikes} others`,
+      };
     },
   },
 
@@ -176,7 +195,7 @@ export default {
         </svg>`,
       },
       commentData: {
-        commentCount: this.post.comments.length,
+        commentCount: this.post.comments_count,
         subbmitting: false,
       },
       comment: {

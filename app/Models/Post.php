@@ -18,7 +18,8 @@ class Post extends Model implements HasMedia, Likeable
 {
     use HasFactory, InteractsWithMedia, ImageTrait, LikableTrait;
 
-    protected $appends = ['mainImage'];
+    protected $appends = ['mainImage', 'totalLikes', 'usersFromLikes'];
+    public $numOfUsersToReturnFromLikes = 2;
 
     public function user(): BelongsTo
     {
@@ -89,6 +90,25 @@ class Post extends Model implements HasMedia, Likeable
         }
 
         return $randomString;
+    }
+
+    // Appends
+
+    public function getUsersFromLikesAttribute()
+    {
+        return $this->likes()
+            ->select('users.username', 'users.slug')
+            ->limit($this->numOfUsersToReturnFromLikes)
+            ->get();
+    }
+
+    public function getTotalLikesAttribute()
+    {
+        $firstThreeUsers = $this->getUsersFromLikesAttribute();
+
+        return $this->likes()
+            ->whereNotIn('users.id', $firstThreeUsers->pluck('id'))
+            ->count();
     }
 
     // Media

@@ -8,7 +8,7 @@ trait LikableTrait
 {
   public function likes()
   {
-    return $this->morphToMany(User::class, 'likables');
+    return $this->morphToMany(User::class, 'likables')->wherePivot('like', 1);
   }
 
   public function addLike()
